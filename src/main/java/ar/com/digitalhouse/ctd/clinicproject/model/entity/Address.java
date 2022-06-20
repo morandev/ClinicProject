@@ -22,11 +22,7 @@ public class Address {
     @Column
     private String areaCode;
     @Column
-    private String town;
-    @Column
     private String city;
-    @Column
-    private String department;
     @Column
     private String province;
 
