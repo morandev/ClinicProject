@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService implements IAppointmentService {
+
     @Autowired
     IAppointmentRepository appointmentDao;
     @Autowired
@@ -71,7 +72,7 @@ public class AppointmentService implements IAppointmentService {
 
     @Override
     public Appointment convertDto( AppointmentDto appointmentDto ) {
-        return mapper.convertValue( appointmentDto, Appointment.class );
+        return mapper.convertValue( appointmentDto , Appointment.class );
     }
 
 }

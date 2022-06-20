@@ -6,12 +6,14 @@ import ar.com.digitalhouse.ctd.clinicproject.model.service.IAddressService;
 import ar.com.digitalhouse.ctd.clinicproject.repository.IAddressRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Service
 public class AddressService implements IAddressService {
 
     @Autowired
@@ -61,7 +63,7 @@ public class AddressService implements IAddressService {
         AddressDto addressDto;
 
         if ( address.isPresent() ) {
-            addressDto = mapper.convertValue(address, AddressDto.class);
+            addressDto = mapper.convertValue( address , AddressDto.class );
             return addressDto;
         }
 
