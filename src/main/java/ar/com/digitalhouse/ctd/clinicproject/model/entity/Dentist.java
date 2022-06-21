@@ -15,7 +15,7 @@ public class Dentist {
 
     @Id
     @GeneratedValue( strategy = GenerationType.AUTO )
-    @Column( name = "dentist_id", nullable = false )
+    @Column( name = "dentist_id" , nullable = false )
     private Long id;
     @Column
     private String name;

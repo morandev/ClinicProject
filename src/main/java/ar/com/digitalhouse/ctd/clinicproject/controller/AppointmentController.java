@@ -12,25 +12,29 @@ import java.util.Collection;
 @RestController
 @RequestMapping( "/appointments" )
 public class AppointmentController {
+
+    //TODO: Buena practica en inyeccion de dependencias
     @Autowired
     IAppointmentService appointmentService;
 
     @PostMapping( path = "/add" )
     public ResponseEntity add( @RequestBody AppointmentDto appointment ) {
         appointmentService.add( appointment );
-        return new ResponseEntity( HttpStatus.BAD_REQUEST );
+        return new ResponseEntity( HttpStatus.CREATED );
     }
 
     @DeleteMapping( "/{id}" )
     public ResponseEntity delete( @PathVariable Long id ) {
         appointmentService.delete( id );
         return new ResponseEntity( HttpStatus.NO_CONTENT );
+        //TODO: Tratar NotFoundException
     }
 
     @GetMapping( "/{id}" )
     @ResponseBody
     public ResponseEntity<AppointmentDto> find( @PathVariable Long id ) {
         return ResponseEntity.ok( appointmentService.find( id ) );
+        //TODO: Tratar NotFoundException
     }
 
     @GetMapping
@@ -43,6 +47,7 @@ public class AppointmentController {
     @ResponseBody
     public ResponseEntity<AppointmentDto> update( @PathVariable Long id , @RequestBody AppointmentDto appointment ) {
         return ResponseEntity.ok( appointmentService.update( id , appointment ) );
+        //TODO: Tratar NotFoundException
     }
 
 }

@@ -27,12 +27,14 @@ public class PatientController {
     public ResponseEntity delete( @PathVariable Long id ) {
         patientService.delete( id );
         return new ResponseEntity( HttpStatus.NO_CONTENT );
+        //TODO: Tratar NotFoundException
     }
 
     @GetMapping( "/{id}" )
     @ResponseBody
     public ResponseEntity<PatientDto> find( @PathVariable Long id ) {
         return ResponseEntity.ok( patientService.find( id ) );
+        //TODO: Tratar NotFoundException
     }
 
     @GetMapping
@@ -45,6 +47,7 @@ public class PatientController {
     @ResponseBody
     public ResponseEntity<PatientDto> update( @PathVariable Long id , @RequestBody PatientDto patient ) {
         return ResponseEntity.ok( patientService.update( id , patient ) );
+        //TODO: Tratar NotFoundException
     }
 
 }

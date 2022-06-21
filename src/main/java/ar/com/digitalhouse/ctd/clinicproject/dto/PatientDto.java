@@ -1,6 +1,5 @@
 package ar.com.digitalhouse.ctd.clinicproject.dto;
 
-import ar.com.digitalhouse.ctd.clinicproject.model.entity.Address;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +13,7 @@ public class PatientDto {
 
     private String name;
     private String surname;
-    private Address address;
+    private AddressDto address;
     private LocalDate registerDate;
 
 }

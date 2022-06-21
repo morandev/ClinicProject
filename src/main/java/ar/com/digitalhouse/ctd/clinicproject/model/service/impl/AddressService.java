@@ -51,6 +51,7 @@ public class AddressService implements IAddressService {
         throw new RuntimeException( "Null on find address by id: " + id );
     }
 
+    //TODO: check delete no funciona con addresses que estan vinculados
     @Override
     public void delete( Long id ) {
         if ( find(id) != null )

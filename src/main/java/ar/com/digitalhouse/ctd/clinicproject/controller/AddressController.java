@@ -13,6 +13,7 @@ import java.util.Collection;
 @RequestMapping( "/addresses" )
 public class AddressController {
 
+    //TODO: Buena practica en inyeccion de dependencias
     @Autowired
     IAddressService addressService;
 
@@ -26,12 +27,14 @@ public class AddressController {
     public ResponseEntity delete( @PathVariable Long id ) {
         addressService.delete( id );
         return new ResponseEntity( HttpStatus.NO_CONTENT );
+        //TODO: Tratar NotFoundException
     }
 
     @GetMapping( "/{id}" )
     @ResponseBody
     public ResponseEntity<AddressDto> find( @PathVariable Long id ) {
         return ResponseEntity.ok( addressService.find( id ) );
+        //TODO: Tratar NotFoundException
     }
 
     @GetMapping
@@ -44,6 +47,7 @@ public class AddressController {
     @ResponseBody
     public ResponseEntity<AddressDto> update( @PathVariable Long id , @RequestBody AddressDto address ) {
         return ResponseEntity.ok( addressService.update( id , address ) );
+        //TODO: Tratar NotFoundException
     }
 
 }

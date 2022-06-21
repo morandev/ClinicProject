@@ -13,6 +13,7 @@ import java.util.Collection;
 @RequestMapping( "/dentists" )
 public class DentistController {
 
+    //TODO: Buena practica en inyeccion de dependencias
     @Autowired
     IDentistService dentistService;
 
@@ -26,12 +27,14 @@ public class DentistController {
     public ResponseEntity delete( @PathVariable Long id ) {
         dentistService.delete( id );
         return new ResponseEntity( HttpStatus.NO_CONTENT );
+        //TODO: Tratar NotFoundException
     }
 
     @GetMapping( "/{id}" )
     @ResponseBody
     public ResponseEntity<DentistDto> find( @PathVariable Long id ) {
         return ResponseEntity.ok( dentistService.find( id ) );
+        //TODO: Tratar NotFoundException
     }
 
     @GetMapping
@@ -44,6 +47,7 @@ public class DentistController {
     @ResponseBody
     public ResponseEntity<DentistDto> update( @PathVariable Long id , @RequestBody DentistDto dentist ) {
         return ResponseEntity.ok( dentistService.update( id , dentist ) );
+        //TODO: Tratar NotFoundException
     }
 
 }
