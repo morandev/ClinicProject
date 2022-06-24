@@ -16,11 +16,13 @@ import java.util.stream.Collectors;
 @Service
 public class AppointmentService implements IAppointmentService {
 
+    private IAppointmentRepository appointmentDao;
+    private ObjectMapper mapper;
     @Autowired
-    IAppointmentRepository appointmentDao;
-    @Autowired
-    ObjectMapper mapper;
-
+    public AppointmentService( IAppointmentRepository appointmentDao, ObjectMapper mapper ) {
+        this.appointmentDao = appointmentDao;
+        this.mapper = mapper;
+    }
     @Override
     public Set<AppointmentDto> getAll() {
         List<Appointment> allAppointments = appointmentDao.findAll();
@@ -31,24 +33,29 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public void add( AppointmentDto appointmentDto ) {
+    public Optional<AppointmentDto> add( AppointmentDto appointmentDto ) {
         Appointment appointment = convertDto( appointmentDto );
-        appointmentDao.save( appointment );
+        Optional<AppointmentDto> dto = Optional.of( mapper.convertValue( appointmentDao.save( appointment ), AppointmentDto.class ) );
+        return dto;
     }
 
     @Override
-    public AppointmentDto update( Long id, AppointmentDto appointment ) {
-        Optional< Appointment > appointmentFromDb = appointmentDao.findById( id );
+    public Optional<AppointmentDto> update( Long id , AppointmentDto appointment ) {
+
+        Optional<Appointment> appointmentFromDb = appointmentDao.findById( id );
+        Optional<AppointmentDto> appointmentDto = Optional.empty();
 
         if( appointmentFromDb.isPresent() ) {
-            Appointment appointmentConverted = convertDto( appointment );
+
+            Appointment appointmentConverted = mapper.convertValue( appointment , Appointment.class );
             appointmentConverted.setId( id );
             appointmentConverted = appointmentDao.save( appointmentConverted );
+            appointmentDto = Optional.of( mapper.convertValue( appointmentConverted , AppointmentDto.class ) );
 
-            return mapper.convertValue( appointmentConverted , AppointmentDto.class );
+            return appointmentDto;
         }
 
-        throw new RuntimeException( "Null on find appointment by id: " + id );
+        return appointmentDto;
     }
 
     @Override
@@ -58,16 +65,14 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public AppointmentDto find( Long id ) {
-        Optional< Appointment > appointment = appointmentDao.findById( id );
-        AppointmentDto appointmentDto;
+    public Optional<AppointmentDto> find( Long id ) {
+        Optional<Appointment> appointment = appointmentDao.findById( id );
+        Optional<AppointmentDto> appointmentDto = Optional.empty();
 
-        if ( appointment.isPresent() ) {
-            appointmentDto = mapper.convertValue( appointment , AppointmentDto.class );
-            return appointmentDto;
-        }
+        if ( appointment.isPresent() )
+            appointmentDto = Optional.of( mapper.convertValue( appointment , AppointmentDto.class ) );
 
-        throw new RuntimeException( "Null on find appointment by id: " + id );
+        return appointmentDto;
     }
 
     @Override

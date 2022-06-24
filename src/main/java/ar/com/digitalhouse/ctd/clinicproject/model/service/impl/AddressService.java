@@ -16,11 +16,13 @@ import java.util.stream.Collectors;
 @Service
 public class AddressService implements IAddressService {
 
+    private IAddressRepository addressDao;
+    private ObjectMapper mapper;
     @Autowired
-    IAddressRepository addressDao;
-    @Autowired
-    ObjectMapper mapper;
-
+    public AddressService( IAddressRepository addressDao, ObjectMapper mapper ) {
+        this.addressDao = addressDao;
+        this.mapper = mapper;
+    }
     @Override
     public Set<AddressDto> getAll() {
         List<Address> allAppointments = addressDao.findAll();
@@ -31,24 +33,29 @@ public class AddressService implements IAddressService {
     }
 
     @Override
-    public void add( AddressDto addressDto ) {
+    public Optional<AddressDto> add( AddressDto addressDto ) {
         Address address = mapper.convertValue( addressDto, Address.class );
-        addressDao.save( address );
+        Optional<AddressDto> dto = Optional.of( mapper.convertValue( addressDao.save( address ), AddressDto.class ) );
+        return dto;
     }
 
     @Override
-    public AddressDto update( Long id , AddressDto address ) {
-        Optional< Address > addressFromDb = addressDao.findById( id );
+    public Optional<AddressDto> update( Long id , AddressDto address ) {
+
+        Optional<Address> addressFromDb = addressDao.findById( id );
+        Optional<AddressDto> addressDto = Optional.empty();
 
         if( addressFromDb.isPresent() ) {
-            Address addressConverter = mapper.convertValue( address , Address.class );
-            addressConverter.setId( id );
-            addressConverter = addressDao.save( addressConverter );
 
-            return mapper.convertValue( addressConverter , AddressDto.class );
+            Address addressConverted = mapper.convertValue( address , Address.class );
+            addressConverted.setId( id );
+            addressConverted = addressDao.save( addressConverted );
+            addressDto = Optional.of( mapper.convertValue( addressConverted , AddressDto.class ) );
+
+            return addressDto;
         }
 
-        throw new RuntimeException( "Null on find address by id: " + id );
+        return addressDto;
     }
 
     //TODO: check delete no funciona con addresses que estan vinculados
@@ -59,16 +66,13 @@ public class AddressService implements IAddressService {
     }
 
     @Override
-    public AddressDto find( Long id ) {
-        Optional< Address > address = addressDao.findById( id );
-        AddressDto addressDto;
+    public Optional<AddressDto> find(Long id ) {
+        Optional<Address> address = addressDao.findById(id);
+        Optional<AddressDto> addressDto = Optional.empty();
 
-        if ( address.isPresent() ) {
-            addressDto = mapper.convertValue( address , AddressDto.class );
-            return addressDto;
-        }
+        if ( address.isPresent() )
+            addressDto = Optional.of( mapper.convertValue( address, AddressDto.class ) );
 
-        throw new RuntimeException( "Null on find address by id: " + id );
+        return addressDto;
     }
-
 }

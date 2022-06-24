@@ -11,9 +11,9 @@ import javax.persistence.*;
 @Setter
 public class Address {
 
-    //TODO: revisar la estrategia de generacion de ids - ex: primer address con id 4
     @Id
-    @GeneratedValue( strategy = GenerationType.AUTO )
+    @SequenceGenerator( name = "address_seq" , sequenceName = "common_sequence" )
+    @GeneratedValue( strategy = GenerationType.SEQUENCE , generator = "address_seq" )
     @Column( name = "address_id", nullable = false )
     private Long id;
     @Column

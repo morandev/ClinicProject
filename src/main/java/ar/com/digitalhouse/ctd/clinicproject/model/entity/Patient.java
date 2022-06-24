@@ -15,14 +15,15 @@ import java.util.Set;
 public class Patient {
 
     @Id
-    @GeneratedValue( strategy = GenerationType.AUTO )
+    @SequenceGenerator( name = "patient_seq" , sequenceName = "common_sequence" )
+    @GeneratedValue( strategy = GenerationType.SEQUENCE , generator = "patient_seq" )
     @Column( name = "patient_id" , nullable = false )
     private Long id;
     @Column
     private String name;
     @Column
     private String surname;
-    @OneToOne( cascade = CascadeType.ALL )
+    @OneToOne( fetch = FetchType.LAZY , cascade = CascadeType.ALL )
     @JoinColumn( name = "fk_address_id" , referencedColumnName = "address_id" )
     private Address address;
     @Column

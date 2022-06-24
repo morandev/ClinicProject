@@ -16,12 +16,14 @@ import java.util.stream.Collectors;
 @Service
 public class PatientService implements IPatientService {
 
+    private IPatientRepository patientDao;
+    private ObjectMapper mapper;
     @Autowired
-    IPatientRepository patientDao;
-    @Autowired
-    ObjectMapper mapper;
+    public PatientService( IPatientRepository patientDao, ObjectMapper mapper ) {
+        this.patientDao = patientDao;
+        this.mapper = mapper;
+    }
 
-    @Override
     public Set<PatientDto> getAll() {
         List<Patient> allPatients = patientDao.findAll();
 
@@ -31,24 +33,29 @@ public class PatientService implements IPatientService {
     }
 
     @Override
-    public void add( PatientDto patientDto ) {
-        Patient pacient = mapper.convertValue( patientDto , Patient.class );
-        patientDao.save( pacient );
+    public Optional<PatientDto> add( PatientDto patientDto ) {
+        Patient patient = mapper.convertValue( patientDto , Patient.class );
+        Optional<PatientDto> dto = Optional.of( mapper.convertValue( patientDao.save( patient ), PatientDto.class ) );
+        return dto;
     }
 
     @Override
-    public PatientDto update( Long id , PatientDto patient ) {
-        Optional< Patient > patientFromDb = patientDao.findById( id );
+    public Optional<PatientDto> update( Long id , PatientDto patient ) {
+
+        Optional<Patient> patientFromDb = patientDao.findById( id );
+        Optional<PatientDto> patientDto = Optional.empty();
 
         if( patientFromDb.isPresent() ) {
+
             Patient patientConverted = mapper.convertValue( patient , Patient.class );
             patientConverted.setId( id );
             patientConverted = patientDao.save( patientConverted );
+            patientDto = Optional.of( mapper.convertValue( patientConverted , PatientDto.class ) );
 
-            return mapper.convertValue( patientConverted, PatientDto.class );
+            return patientDto;
         }
 
-        throw new RuntimeException( "Null on find patient by id: " + id );
+        return patientDto;
     }
 
     @Override
@@ -58,15 +65,13 @@ public class PatientService implements IPatientService {
     }
 
     @Override
-    public PatientDto find( Long id ) {
-        Optional< Patient > patient = patientDao.findById( id );
-        PatientDto patientDto;
+    public Optional<PatientDto> find( Long id ) {
+        Optional<Patient> patient = patientDao.findById( id );
+        Optional<PatientDto> patientDto = Optional.empty();
 
-        if ( patient.isPresent() ) {
-            patientDto = mapper.convertValue( patient , PatientDto.class );
-            return patientDto;
-        }
+        if ( patient.isPresent() )
+            patientDto = Optional.of( mapper.convertValue( patient , PatientDto.class ) );
 
-        throw new RuntimeException( "Null on find patient by id: " + id );
+        return patientDto;
     }
 }

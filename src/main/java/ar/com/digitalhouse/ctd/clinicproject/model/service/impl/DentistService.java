@@ -16,39 +16,46 @@ import java.util.stream.Collectors;
 @Service
 public class DentistService implements IDentistService {
 
+    private IDentistRepository dentistDao;
+    private ObjectMapper mapper;
     @Autowired
-    IDentistRepository dentistDao;
-    @Autowired
-    ObjectMapper mapper;
-
+    public DentistService( IDentistRepository dentistDao, ObjectMapper mapper ) {
+        this.dentistDao = dentistDao;
+        this.mapper = mapper;
+    }
     @Override
     public Set<DentistDto> getAll() {
         List<Dentist> allDentists = dentistDao.findAll();
 
         return allDentists.stream()
-                                .map( dentist -> mapper.convertValue( dentist, DentistDto.class ) )
-                                .collect( Collectors.toSet() );
+                .map( dentist -> mapper.convertValue( dentist, DentistDto.class ) )
+                .collect( Collectors.toSet() );
     }
 
     @Override
-    public void add( DentistDto dentistDto ) {
+    public Optional<DentistDto> add( DentistDto dentistDto ) {
         Dentist dentist = mapper.convertValue( dentistDto, Dentist.class );
-        dentistDao.save( dentist );
+        Optional<DentistDto> dto = Optional.of( mapper.convertValue( dentistDao.save( dentist ), DentistDto.class ) );
+        return dto;
     }
 
     @Override
-    public DentistDto update( Long id, DentistDto dentist ) {
-        Optional< Dentist > dentistFromDb = dentistDao.findById( id );
+    public Optional<DentistDto> update( Long id, DentistDto dentist ) {
+
+        Optional<Dentist> dentistFromDb = dentistDao.findById( id );
+        Optional<DentistDto> dentistDto = Optional.empty();
 
         if( dentistFromDb.isPresent() ) {
+
             Dentist dentistConverted = mapper.convertValue( dentist , Dentist.class );
             dentistConverted.setId( id );
             dentistConverted = dentistDao.save( dentistConverted );
+            dentistDto = Optional.of( mapper.convertValue( dentistConverted , DentistDto.class ) );
 
-            return mapper.convertValue( dentistConverted, DentistDto.class );
+            return dentistDto;
         }
 
-        throw new RuntimeException( "Null on find dentist by id: " + id );
+        return dentistDto;
     }
 
     @Override
@@ -58,15 +65,24 @@ public class DentistService implements IDentistService {
     }
 
     @Override
-    public DentistDto find( Long id ) {
-        Optional< Dentist > dentist = dentistDao.findById( id );
-        DentistDto dentistDto;
+    public Optional<DentistDto> find( Long id ) {
+        Optional<Dentist> dentist = dentistDao.findById( id );
+        Optional<DentistDto> dentistDto = Optional.empty();
 
-        if ( dentist.isPresent() ) {
-            dentistDto = mapper.convertValue( dentist , DentistDto.class );
-            return dentistDto;
-        }
+        if( dentist.isPresent() )
+            dentistDto = Optional.of( mapper.convertValue( dentist , DentistDto.class ) );
 
-        throw new RuntimeException( "Null on find dentist by id: " + id );
+        return dentistDto;
+    }
+
+    @Override
+    public Optional<DentistDto> findByEnrollment( String enrollment ) {
+        Optional<Dentist> dentist = dentistDao.findByEnrollment( enrollment );
+        Optional<DentistDto> dentistDto = Optional.empty();
+
+        if( dentist.isPresent() )
+            dentistDto = Optional.of( mapper.convertValue( dentist , DentistDto.class ) );
+
+        return dentistDto;
     }
 }

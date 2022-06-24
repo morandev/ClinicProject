@@ -2,10 +2,8 @@ package ar.com.digitalhouse.ctd.clinicproject.model.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table( name = "dentists" )
@@ -14,14 +12,15 @@ import java.util.Objects;
 public class Dentist {
 
     @Id
-    @GeneratedValue( strategy = GenerationType.AUTO )
+    @SequenceGenerator( name = "dentist_seq" , sequenceName = "common_sequence" )
+    @GeneratedValue( strategy = GenerationType.SEQUENCE , generator = "dentist_seq" )
     @Column( name = "dentist_id" , nullable = false )
     private Long id;
     @Column
     private String name;
     @Column
     private String surname;
-    @Column
+    @Column( unique = true )
     private String enrollment;
 
 }

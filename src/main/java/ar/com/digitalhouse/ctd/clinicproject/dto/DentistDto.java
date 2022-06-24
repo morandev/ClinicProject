@@ -9,6 +9,7 @@ import lombok.Setter;
 @Getter
 public class DentistDto {
 
+    private long id;
     private String name;
     private String surname;
     private String enrollment;
