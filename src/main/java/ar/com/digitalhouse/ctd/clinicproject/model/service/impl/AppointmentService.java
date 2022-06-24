@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 @Service
 public class AppointmentService implements IAppointmentService {
 
-    private IAppointmentRepository appointmentDao;
-    private ObjectMapper mapper;
+    private final IAppointmentRepository appointmentDao;
+    private final ObjectMapper mapper;
     @Autowired
     public AppointmentService( IAppointmentRepository appointmentDao, ObjectMapper mapper ) {
         this.appointmentDao = appointmentDao;

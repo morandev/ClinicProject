@@ -220,7 +220,7 @@ window.addEventListener( 'load' , function() {
             row.appendChild( enrollmentCell );
             row.appendChild( actionsCell );
 
-            // TALBLE BODY APPEND'S
+            // TABLE BODY APPEND'S
             tblBody.appendChild( row );
           });
           

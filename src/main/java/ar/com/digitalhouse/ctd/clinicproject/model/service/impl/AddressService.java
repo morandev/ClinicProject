@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 @Service
 public class AddressService implements IAddressService {
 
-    private IAddressRepository addressDao;
-    private ObjectMapper mapper;
+    private final IAddressRepository addressDao;
+    private final ObjectMapper mapper;
     @Autowired
     public AddressService( IAddressRepository addressDao, ObjectMapper mapper ) {
         this.addressDao = addressDao;
@@ -58,7 +58,6 @@ public class AddressService implements IAddressService {
         return addressDto;
     }
 
-    //TODO: check delete no funciona con addresses que estan vinculados
     @Override
     public void delete( Long id ) {
         if ( find(id) != null )
@@ -66,8 +65,8 @@ public class AddressService implements IAddressService {
     }
 
     @Override
-    public Optional<AddressDto> find(Long id ) {
-        Optional<Address> address = addressDao.findById(id);
+    public Optional<AddressDto> find( Long id ) {
+        Optional<Address> address = addressDao.findById( id );
         Optional<AddressDto> addressDto = Optional.empty();
 
         if ( address.isPresent() )

@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 @Service
 public class PatientService implements IPatientService {
 
-    private IPatientRepository patientDao;
-    private ObjectMapper mapper;
+    private final IPatientRepository patientDao;
+    private final ObjectMapper mapper;
     @Autowired
     public PatientService( IPatientRepository patientDao, ObjectMapper mapper ) {
         this.patientDao = patientDao;

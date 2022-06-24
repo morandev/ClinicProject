@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity( name = "users_entity" )
+@Entity
 @Table( name = "users" )
 @Getter
 @Setter
@@ -16,25 +16,19 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    @GeneratedValue( strategy = GenerationType.AUTO )
-    @Column( name = "user_id", nullable = false )
+    @SequenceGenerator( name = "user_seq" , sequenceName = "common_sequence" )
+    @GeneratedValue( strategy = GenerationType.SEQUENCE , generator = "user_seq" )
     private Long id;
-    @Basic
     @Column
     private String name;
-    @Basic
     @Column
     private String lastName;
-    @Basic
     @Column
     private String username;
-    @Basic
     @Column( unique = true )
     private String email;
-    @Basic
     @Column
     private String password;
-    @Basic
     @Column
     @Enumerated( EnumType.STRING )
     private Rol rol;

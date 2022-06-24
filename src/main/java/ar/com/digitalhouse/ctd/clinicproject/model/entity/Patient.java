@@ -1,12 +1,10 @@
 package ar.com.digitalhouse.ctd.clinicproject.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Set;
 
 @Entity
 @Table( name = "patients" )
@@ -30,4 +28,5 @@ public class Patient {
     private String dni;
     @Column
     private LocalDate registerDate;
+
 }

@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 @Service
 public class DentistService implements IDentistService {
 
-    private IDentistRepository dentistDao;
-    private ObjectMapper mapper;
+    private final IDentistRepository dentistDao;
+    private final ObjectMapper mapper;
     @Autowired
     public DentistService( IDentistRepository dentistDao, ObjectMapper mapper ) {
         this.dentistDao = dentistDao;
