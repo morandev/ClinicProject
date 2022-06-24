@@ -13,7 +13,6 @@ window.addEventListener( 'load' , function () {
 
         //mostrarSpinner();
 
-        //creamos el cuerpo de la request
         const payload = {
             firstName: firstName.value,
             lastName: lastName.value, 
@@ -21,16 +20,6 @@ window.addEventListener( 'load' , function () {
             email: email.value,
             password: password.value
         };
-        
-        // // let data = JSON.stringify( payload );
-        // data = JSON.stringify( payload );
-
-        // console.log("Asi quedo la data: " + data );
-        
-
-        // for ( let k in payload ) { 
-        //     url.searchParams.append( k , payload[k] );
-        // }
 
         url.searchParams.append( "firstName" , payload.firstName );
         url.searchParams.append( "lastName" , payload.lastName );
@@ -38,7 +27,6 @@ window.addEventListener( 'load' , function () {
         url.searchParams.append( "email" , payload.email );
         url.searchParams.append( "password" , payload.password );
 
-        //configuramos la request del Fetch
         const settings = {
             method: 'POST',
             mode: 'no-cors',
@@ -47,7 +35,6 @@ window.addEventListener( 'load' , function () {
             }
         };
 
-        //lanzamos la consulta de login a la API
         doSignUp( settings );
 
         //limpio los campos del formulario
@@ -55,13 +42,13 @@ window.addEventListener( 'load' , function () {
     });
 
     function doSignUp( settings ) {
-        //TODO: Borrar
-        console.log( "Lanzando la consulta a la API" );
-        console.log( "La URL: " + url );
+
+        // console.log( "Lanzando la consulta a la API" );
+        // console.log( "La URL: " + url );
         
         fetch( url , settings )
             .then( response => {
-                console.log(response);
+                // console.log(response);
 
                 if ( response.ok != true ) {
                     alert( "Alguno de los datos es incorrecto." ) 
@@ -70,20 +57,8 @@ window.addEventListener( 'load' , function () {
                 return response.json();
             })
             .then( data => {
-                console.log( "Promesa cumplida:" );
-                console.log( data );
-
-                // if ( data.jwt ) {
-                //     //guardo en LocalStorage el objeto con el token
-                //     localStorage.setItem( 'jwt' , JSON.stringify( data.jwt ));
-
-                //     // Una vez obtenida la respuesta de la API, ocultamos el spinner
-                //     // ocultarSpinner();
-
-                //     //redireccionamos a la página
-                //     location.replace('./mis-tareas.html');
-                // }
-                
+                // console.log( "Promesa cumplida:" );
+                // console.log( data );
             }).catch(err => {
                 //Ocultamos el spinner en caso de error
                 // ocultarSpinner();
@@ -96,6 +71,12 @@ window.addEventListener( 'load' , function () {
         e.preventDefault();
         
         location.assign("../index.html");
+    });
+
+    document.querySelector('.no-security')?.addEventListener('click', function( e ) {
+        e.preventDefault();
+
+        location.assign("../views/home.html");
     });
 
 });
