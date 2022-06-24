@@ -3,38 +3,56 @@ package ar.com.digitalhouse.ctd.clinicproject.controller;
 import ar.com.digitalhouse.ctd.clinicproject.dto.PatientDto;
 import ar.com.digitalhouse.ctd.clinicproject.model.service.IPatientService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @RequestMapping( "/patients" )
 public class PatientController {
-
-    //TODO: Buena practica en inyeccion de dependencias
+    private final IPatientService patientService;
     @Autowired
-    IPatientService patientService;
+    public PatientController( IPatientService patientService ) {
+        this.patientService = patientService;
+    }
 
     @PostMapping( path = "/add" )
-    public ResponseEntity add( @RequestBody PatientDto patient ) {
-        patientService.add( patient );
-        return new ResponseEntity( HttpStatus.CREATED );
+    public ResponseEntity<PatientDto> add( @RequestBody PatientDto patient ) {
+        Optional<PatientDto> patientDto = patientService.add( patient );
+
+        if( patientDto.isPresent() ) {
+            URI uri = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand( patientDto.get().getId() )
+                    .toUri();
+
+            return ResponseEntity.created( uri ).body( patientDto.get() );
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping( "/{id}" )
     public ResponseEntity delete( @PathVariable Long id ) {
         patientService.delete( id );
-        return new ResponseEntity( HttpStatus.NO_CONTENT );
-        //TODO: Tratar NotFoundException
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping( "/{id}" )
     @ResponseBody
     public ResponseEntity<PatientDto> find( @PathVariable Long id ) {
-        return ResponseEntity.ok( patientService.find( id ) );
-        //TODO: Tratar NotFoundException
+        Optional<PatientDto> patientDto = patientService.find( id );
+
+        if( patientDto.isPresent() ) {
+            return ResponseEntity.ok( patientDto.get() );
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping
@@ -46,8 +64,13 @@ public class PatientController {
     @PutMapping( "/{id}" )
     @ResponseBody
     public ResponseEntity<PatientDto> update( @PathVariable Long id , @RequestBody PatientDto patient ) {
-        return ResponseEntity.ok( patientService.update( id , patient ) );
-        //TODO: Tratar NotFoundException
+        Optional<PatientDto> patientDto = patientService.update( id , patient );
+
+        if( patientDto.isPresent() ) {
+            return ResponseEntity.ok( patientDto.get() );
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
 }

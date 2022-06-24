@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 public class AppointmentDto {
 
+    private long id;
     private PatientDto patient;
     private DentistDto dentist;
     private LocalDateTime dateTime;

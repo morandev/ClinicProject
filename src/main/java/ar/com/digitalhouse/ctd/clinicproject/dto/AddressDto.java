@@ -9,6 +9,7 @@ import lombok.Setter;
 @Getter
 public class AddressDto {
 
+    private long id;
     private String street;
     private Integer number;
     private String areaCode;
