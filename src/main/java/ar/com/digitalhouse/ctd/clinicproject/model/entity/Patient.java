@@ -1,6 +1,8 @@
 package ar.com.digitalhouse.ctd.clinicproject.model.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,12 +12,14 @@ import java.time.LocalDate;
 @Table( name = "patients" )
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Patient {
 
     @Id
-    @SequenceGenerator( name = "patient_seq" , sequenceName = "common_sequence" )
+    @SequenceGenerator( name = "patient_seq" , sequenceName = "patient_sequence" )
     @GeneratedValue( strategy = GenerationType.SEQUENCE , generator = "patient_seq" )
-    @Column( name = "patient_id" , nullable = false )
+    @Column( name = "patient_id" )
     private Long id;
     @Column
     private String name;
