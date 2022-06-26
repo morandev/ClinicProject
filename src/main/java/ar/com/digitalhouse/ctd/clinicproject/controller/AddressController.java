@@ -15,7 +15,6 @@ import java.util.Optional;
 @RequestMapping( "/addresses" )
 public class AddressController {
     private final IAddressService addressService;
-
     @Autowired
     public AddressController( IAddressService addressService ) {
         this.addressService = addressService;
@@ -45,7 +44,6 @@ public class AddressController {
     }
 
     @GetMapping( "/{id}" )
-    @ResponseBody
     public ResponseEntity<AddressDto> find( @PathVariable Long id ) {
         Optional<AddressDto> addressDto = addressService.find( id );
 
@@ -57,13 +55,11 @@ public class AddressController {
     }
 
     @GetMapping
-    @ResponseBody
     public ResponseEntity<Collection<AddressDto>> getAll() {
         return ResponseEntity.ok( addressService.getAll() );
     }
 
     @PutMapping( "/{id}" )
-    @ResponseBody
     public ResponseEntity<AddressDto> update( @PathVariable Long id , @RequestBody AddressDto address ) {
         Optional<AddressDto> addressDto = addressService.update( id , address );
 

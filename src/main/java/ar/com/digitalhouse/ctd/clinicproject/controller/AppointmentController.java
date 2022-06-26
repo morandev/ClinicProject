@@ -15,7 +15,6 @@ import java.util.Optional;
 @RequestMapping( "/appointments" )
 public class AppointmentController {
     private final IAppointmentService appointmentService;
-
     @Autowired
     public AppointmentController( IAppointmentService appointmentService ) {
         this.appointmentService = appointmentService;
@@ -45,7 +44,6 @@ public class AppointmentController {
     }
 
     @GetMapping( "/{id}" )
-    @ResponseBody
     public ResponseEntity<AppointmentDto> find( @PathVariable Long id ) {
         Optional<AppointmentDto> appointmentDto = appointmentService.find( id );
 
@@ -57,11 +55,9 @@ public class AppointmentController {
     }
 
     @GetMapping
-    @ResponseBody
     public ResponseEntity< Collection<AppointmentDto> > getAll() { return ResponseEntity.ok( appointmentService.getAll() ); }
 
     @PutMapping( "/{id}" )
-    @ResponseBody
     public ResponseEntity<AppointmentDto> update( @PathVariable Long id , @RequestBody AppointmentDto appointment ) {
         Optional<AppointmentDto> appointmentDto = appointmentService.update( id , appointment );
 

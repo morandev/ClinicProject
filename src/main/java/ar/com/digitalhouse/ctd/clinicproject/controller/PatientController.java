@@ -44,7 +44,6 @@ public class PatientController {
     }
 
     @GetMapping( "/{id}" )
-    @ResponseBody
     public ResponseEntity<PatientDto> find( @PathVariable Long id ) {
         Optional<PatientDto> patientDto = patientService.find( id );
 
@@ -56,13 +55,11 @@ public class PatientController {
     }
 
     @GetMapping
-    @ResponseBody
     public ResponseEntity< Collection<PatientDto> > getAll() {
         return ResponseEntity.ok( patientService.getAll() );
     }
 
     @PutMapping( "/{id}" )
-    @ResponseBody
     public ResponseEntity<PatientDto> update( @PathVariable Long id , @RequestBody PatientDto patient ) {
         Optional<PatientDto> patientDto = patientService.update( id , patient );
 

@@ -15,7 +15,6 @@ import java.util.Optional;
 @RequestMapping( "/dentists" )
 public class DentistController {
     private final IDentistService dentistService;
-
     @Autowired
     public DentistController( IDentistService dentistService ) {
         this.dentistService = dentistService;
@@ -45,7 +44,6 @@ public class DentistController {
     }
 
     @GetMapping( "/" )
-    @ResponseBody
     public ResponseEntity<DentistDto> findByEnrollment( @RequestParam( required = false ) String enrollment) {
         Optional<DentistDto> opDentistDto = dentistService.findByEnrollment( enrollment );
 
@@ -57,7 +55,6 @@ public class DentistController {
     }
 
     @GetMapping( "/{id}" )
-    @ResponseBody
     public ResponseEntity<DentistDto> find( @PathVariable Long id ) {
         Optional<DentistDto> opDentistDto = dentistService.find( id );
 
@@ -69,13 +66,11 @@ public class DentistController {
     }
 
     @GetMapping
-    @ResponseBody
     public ResponseEntity< Collection<DentistDto> > getAll() {
         return ResponseEntity.ok( dentistService.getAll() );
     }
 
     @PutMapping( "/{id}" )
-    @ResponseBody
     public ResponseEntity<DentistDto> update( @PathVariable Long id , @RequestBody DentistDto dentistDto ) {
         Optional<DentistDto> opDentistDto = dentistService.update( id , dentistDto );
 
