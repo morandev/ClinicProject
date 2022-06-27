@@ -39,8 +39,13 @@ public class DentistController {
 
     @DeleteMapping( "/{id}" )
     public ResponseEntity delete( @PathVariable Long id ) {
-        dentistService.delete( id );
-        return ResponseEntity.noContent().build();
+
+        if( dentistService.find( id ).isPresent() ) {
+            dentistService.delete( id );
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping( "/" )

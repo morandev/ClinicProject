@@ -16,9 +16,7 @@ import java.util.Optional;
 public class AppointmentController {
     private final IAppointmentService appointmentService;
     @Autowired
-    public AppointmentController( IAppointmentService appointmentService ) {
-        this.appointmentService = appointmentService;
-    }
+    public AppointmentController( IAppointmentService appointmentService ) { this.appointmentService = appointmentService; }
 
     @PostMapping( path = "/add" )
     public ResponseEntity<AppointmentDto> add( @RequestBody AppointmentDto appointment ) {
@@ -39,8 +37,13 @@ public class AppointmentController {
 
     @DeleteMapping( "/{id}" )
     public ResponseEntity delete( @PathVariable Long id ) {
-        appointmentService.delete( id );
-        return ResponseEntity.noContent().build();
+
+        if( appointmentService.find( id ).isPresent() ) {
+            appointmentService.delete( id );
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping( "/{id}" )
