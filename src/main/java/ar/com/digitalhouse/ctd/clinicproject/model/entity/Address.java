@@ -1,5 +1,6 @@
 package ar.com.digitalhouse.ctd.clinicproject.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
