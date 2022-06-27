@@ -1,5 +1,6 @@
 package ar.com.digitalhouse.ctd.clinicproject.model.service;
 
+import ar.com.digitalhouse.ctd.clinicproject.dto.AddressDto;
 import ar.com.digitalhouse.ctd.clinicproject.dto.PatientDto;
 
 import java.util.Optional;
@@ -12,5 +13,6 @@ public interface IPatientService {
     Optional<PatientDto> update( Long id , PatientDto patient );
     Optional<PatientDto> find( Long id );
     void delete( Long id );
+    boolean validate( PatientDto patientDto );
 
 }

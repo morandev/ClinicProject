@@ -1,6 +1,7 @@
 package ar.com.digitalhouse.ctd.clinicproject.model.service;
 
 import ar.com.digitalhouse.ctd.clinicproject.dto.DentistDto;
+import ar.com.digitalhouse.ctd.clinicproject.dto.PatientDto;
 
 import java.util.Optional;
 import java.util.Set;
@@ -13,5 +14,6 @@ public interface IDentistService {
     Optional<DentistDto> find( Long id );
     void delete( Long id );
     Optional<DentistDto> findByEnrollment( String enrollment );
+    boolean validate( DentistDto dentistDto );
 
 }

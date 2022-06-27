@@ -19,17 +19,20 @@ public class AppointmentController {
     public AppointmentController( IAppointmentService appointmentService ) { this.appointmentService = appointmentService; }
 
     @PostMapping( path = "/add" )
-    public ResponseEntity<AppointmentDto> add( @RequestBody AppointmentDto appointment ) {
-        Optional<AppointmentDto> appointmentDto = appointmentService.add( appointment );
+    public ResponseEntity<AppointmentDto> add( @RequestBody AppointmentDto appointmentDto ) {
 
-        if( appointmentDto.isPresent() ) {
-            URI uri = ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand( appointmentDto.get().getId() )
-                    .toUri();
+        if( appointmentService.validate( appointmentDto ) ) {
+            Optional<AppointmentDto> appointmentDtoDb = appointmentService.add( appointmentDto );
 
-            return ResponseEntity.created( uri ).body( appointmentDto.get() );
+            if( appointmentDtoDb.isPresent() ) {
+                URI uri = ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                        .path("/{id}")
+                        .buildAndExpand( appointmentDtoDb.get().getId() )
+                        .toUri();
+
+                return ResponseEntity.created( uri ).body( appointmentDtoDb.get() );
+            }
         }
 
         return ResponseEntity.notFound().build();
@@ -70,5 +73,6 @@ public class AppointmentController {
 
         return ResponseEntity.notFound().build();
     }
+
 
 }

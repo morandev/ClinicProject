@@ -65,6 +65,11 @@ public class PatientService implements IPatientService {
     }
 
     @Override
+    public boolean validate( PatientDto patientDto ) {
+        return patientDao.existsById( patientDto.getId() );
+    }
+
+    @Override
     public Optional<PatientDto> find( Long id ) {
         Optional<Patient> patient = patientDao.findById( id );
         Optional<PatientDto> patientDto = Optional.empty();

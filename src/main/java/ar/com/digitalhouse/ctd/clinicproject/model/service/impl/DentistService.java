@@ -85,4 +85,9 @@ public class DentistService implements IDentistService {
 
         return dentistDto;
     }
+
+    @Override
+    public boolean validate( DentistDto dentistDto ) {
+        return dentistDao.existsById( dentistDto.getId() );
+    }
 }

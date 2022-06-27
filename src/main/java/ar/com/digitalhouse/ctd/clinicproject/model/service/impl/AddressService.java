@@ -65,6 +65,11 @@ public class AddressService implements IAddressService {
     }
 
     @Override
+    public boolean validate( AddressDto addressDto ) {
+        return addressDao.existsById( addressDto.getId() );
+    }
+
+    @Override
     public Optional<AddressDto> find( Long id ) {
         Optional<Address> address = addressDao.findById( id );
         Optional<AddressDto> addressDto = Optional.empty();

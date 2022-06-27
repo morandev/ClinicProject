@@ -3,6 +3,8 @@ package ar.com.digitalhouse.ctd.clinicproject.model.service.impl;
 import ar.com.digitalhouse.ctd.clinicproject.dto.AppointmentDto;
 import ar.com.digitalhouse.ctd.clinicproject.model.entity.Appointment;
 import ar.com.digitalhouse.ctd.clinicproject.model.service.IAppointmentService;
+import ar.com.digitalhouse.ctd.clinicproject.model.service.IDentistService;
+import ar.com.digitalhouse.ctd.clinicproject.model.service.IPatientService;
 import ar.com.digitalhouse.ctd.clinicproject.repository.IAppointmentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +20,15 @@ public class AppointmentService implements IAppointmentService {
 
     private final IAppointmentRepository appointmentDao;
     private final ObjectMapper mapper;
+    private final IDentistService dentistService;
+    private final IPatientService patientService;
+
     @Autowired
-    public AppointmentService( IAppointmentRepository appointmentDao, ObjectMapper mapper ) {
+    public AppointmentService( IAppointmentRepository appointmentDao, ObjectMapper mapper, IDentistService dentistService, IPatientService patientService  ) {
         this.appointmentDao = appointmentDao;
         this.mapper = mapper;
+        this.dentistService = dentistService;
+        this.patientService = patientService;
     }
     @Override
     public Set<AppointmentDto> getAll() {
@@ -79,5 +86,13 @@ public class AppointmentService implements IAppointmentService {
     public Appointment convertDto( AppointmentDto appointmentDto ) {
         return mapper.convertValue( appointmentDto , Appointment.class );
     }
+
+    @Override
+    public boolean validate(AppointmentDto appointmentDto) {
+        return patientService.validate( appointmentDto.getPatient() )
+                                        &&
+                dentistService.validate( appointmentDto.getDentist() );
+    }
+
 
 }
