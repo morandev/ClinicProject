@@ -9,6 +9,6 @@ Proyecto final de la materia backend-1 de [Certified Tech Developer](https://www
 ## Dashboard
 ![dentist-dashboard](https://user-images.githubusercontent.com/93687744/176247196-bf2ab7bd-7192-4849-a6ad-343cf2985a6e.png)
 
-[![OSS Status: Active](https://img.shields.io/badge/state-active-green)](OSS_STATUS.md)
+[![OSS Status: repo status](https://img.shields.io/badge/repo%20status-active-green)](OSS_STATUS.md)
 
 
