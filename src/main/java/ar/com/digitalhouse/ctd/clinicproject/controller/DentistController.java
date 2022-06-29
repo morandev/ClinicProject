@@ -26,8 +26,8 @@ public class DentistController {
 
         if( opDentistDto.isPresent() ) {
             URI uri = ServletUriComponentsBuilder
-                        .fromCurrentRequest()
-                        .path("/{id}")
+                        .fromCurrentServletMapping()
+                        .path("/dentists/{id}")
                         .buildAndExpand( opDentistDto.get().getId() )
                         .toUri();
             
