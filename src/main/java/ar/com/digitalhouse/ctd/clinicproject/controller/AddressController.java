@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
@@ -21,7 +22,7 @@ public class AddressController {
     }
 
     @PostMapping( path = "/add" )
-    public ResponseEntity<AddressDto> add( @RequestBody AddressDto address ) {
+    public ResponseEntity<AddressDto> add( @Valid @RequestBody AddressDto address ) {
         Optional<AddressDto> addressDto = addressService.add( address );
 
         if( addressDto.isPresent() ) {
@@ -65,7 +66,7 @@ public class AddressController {
     }
 
     @PutMapping( "/{id}" )
-    public ResponseEntity<AddressDto> update( @PathVariable Long id , @RequestBody AddressDto address ) {
+    public ResponseEntity<AddressDto> update( @PathVariable Long id , @Valid @RequestBody AddressDto address ) {
         Optional<AddressDto> addressDto = addressService.update( id , address );
 
         if( addressDto.isPresent() ) {

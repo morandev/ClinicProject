@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
@@ -21,7 +22,7 @@ public class DentistController {
     }
 
     @PostMapping( path = "/add" )
-    public ResponseEntity<DentistDto> add( @RequestBody DentistDto dentist ) {
+    public ResponseEntity<DentistDto> add( @Valid @RequestBody DentistDto dentist ) {
         Optional<DentistDto> opDentistDto = dentistService.add( dentist );
 
         if( opDentistDto.isPresent() ) {
@@ -76,7 +77,7 @@ public class DentistController {
     }
 
     @PutMapping( "/{id}" )
-    public ResponseEntity<DentistDto> update( @PathVariable Long id , @RequestBody DentistDto dentistDto ) {
+    public ResponseEntity<DentistDto> update( @PathVariable Long id , @Valid @RequestBody DentistDto dentistDto ) {
         Optional<DentistDto> opDentistDto = dentistService.update( id , dentistDto );
 
         if( opDentistDto.isPresent() ) {
