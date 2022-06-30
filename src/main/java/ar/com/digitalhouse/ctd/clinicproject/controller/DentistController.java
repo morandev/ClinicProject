@@ -3,6 +3,7 @@ package ar.com.digitalhouse.ctd.clinicproject.controller;
 import ar.com.digitalhouse.ctd.clinicproject.dto.DentistDto;
 import ar.com.digitalhouse.ctd.clinicproject.model.service.IDentistService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -23,19 +24,25 @@ public class DentistController {
 
     @PostMapping( path = "/add" )
     public ResponseEntity<DentistDto> add( @Valid @RequestBody DentistDto dentist ) {
-        Optional<DentistDto> opDentistDto = dentistService.add( dentist );
 
-        if( opDentistDto.isPresent() ) {
-            URI uri = ServletUriComponentsBuilder
+        if ( !dentistService.validate( dentist ) ) {
+
+            Optional<DentistDto> opDentistDto = dentistService.add( dentist );
+
+            if ( opDentistDto.isPresent() ) {
+                URI uri = ServletUriComponentsBuilder
                         .fromCurrentServletMapping()
                         .path("/dentists/{id}")
                         .buildAndExpand( opDentistDto.get().getId() )
                         .toUri();
-            
-            return ResponseEntity.created( uri ).body( opDentistDto.get() );
+
+                return ResponseEntity.created( uri ).body( opDentistDto.get() );
+            }
+
+            return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.notFound().build();
+        return new ResponseEntity<>( HttpStatus.CONFLICT );
     }
 
     @DeleteMapping( "/{id}" )

@@ -3,6 +3,7 @@ package ar.com.digitalhouse.ctd.clinicproject.controller;
 import ar.com.digitalhouse.ctd.clinicproject.dto.AppointmentDto;
 import ar.com.digitalhouse.ctd.clinicproject.model.service.IAppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import javax.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -22,21 +23,26 @@ public class AppointmentController {
     @PostMapping( path = "/add" )
     public ResponseEntity<AppointmentDto> add( @Valid @RequestBody AppointmentDto appointmentDto ) {
 
-        if( appointmentService.validate( appointmentDto ) ) {
-            Optional<AppointmentDto> appointmentDtoDb = appointmentService.add( appointmentDto );
+        if ( appointmentService.validate( appointmentDto ) ) {
+            if ( appointmentService.validateParticipants( appointmentDto ) ) {
 
-            if( appointmentDtoDb.isPresent() ) {
-                URI uri = ServletUriComponentsBuilder
-                        .fromCurrentRequest()
-                        .path("/{id}")
-                        .buildAndExpand( appointmentDtoDb.get().getId() )
-                        .toUri();
+                Optional<AppointmentDto> appointmentDtoDb = appointmentService.add( appointmentDto );
 
-                return ResponseEntity.created( uri ).body( appointmentDtoDb.get() );
+                if( appointmentDtoDb.isPresent() ) {
+                    URI uri = ServletUriComponentsBuilder
+                            .fromCurrentServletMapping()
+                            .path("/appointments/{id}")
+                            .buildAndExpand( appointmentDtoDb.get().getId() )
+                            .toUri();
+
+                    return ResponseEntity.created( uri ).body( appointmentDtoDb.get() );
+                }
+
+                return ResponseEntity.notFound().build();
             }
         }
 
-        return ResponseEntity.notFound().build();
+        return new ResponseEntity<>( HttpStatus.CONFLICT );
     }
 
     @DeleteMapping( "/{id}" )

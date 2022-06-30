@@ -3,6 +3,7 @@ package ar.com.digitalhouse.ctd.clinicproject.controller;
 import ar.com.digitalhouse.ctd.clinicproject.dto.AddressDto;
 import ar.com.digitalhouse.ctd.clinicproject.model.service.IAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -23,19 +24,25 @@ public class AddressController {
 
     @PostMapping( path = "/add" )
     public ResponseEntity<AddressDto> add( @Valid @RequestBody AddressDto address ) {
-        Optional<AddressDto> addressDto = addressService.add( address );
 
-        if( addressDto.isPresent() ) {
-            URI uri = ServletUriComponentsBuilder
-                        .fromCurrentRequest()
-                        .path("/{id}")
+        if ( !addressService.validate( address ) ) {
+
+            Optional<AddressDto> addressDto = addressService.add( address );
+
+            if ( addressDto.isPresent() ) {
+                URI uri = ServletUriComponentsBuilder
+                        .fromCurrentServletMapping()
+                        .path("/addresses/{id}")
                         .buildAndExpand( addressDto.get().getId() )
                         .toUri();
 
-            return ResponseEntity.created( uri ).body( addressDto.get() );
+                return ResponseEntity.created( uri ).body( addressDto.get() );
+            }
+
+            return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.notFound().build();
+        return new ResponseEntity<>( HttpStatus.CONFLICT );
     }
 
     @DeleteMapping( "/{id}" )

@@ -16,4 +16,5 @@ public interface IAppointmentService {
     void delete( Long id );
     Appointment convertDto( AppointmentDto appointmentDto );
     boolean validate( AppointmentDto appointmentDto );
+    boolean validateParticipants( AppointmentDto appointmentDto );
 }

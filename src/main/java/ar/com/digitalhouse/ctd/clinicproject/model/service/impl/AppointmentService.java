@@ -88,9 +88,12 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public boolean validate(AppointmentDto appointmentDto) {
-        return patientService.validate( appointmentDto.getPatient() )
-                                        &&
+    public boolean validate( AppointmentDto appointmentDto ) {
+        return !appointmentDao.existsById( appointmentDto.getId() );
+    }
+
+    public boolean validateParticipants( AppointmentDto appointmentDto ) {
+        return  patientService.validate( appointmentDto.getPatient() ) &&
                 dentistService.validate( appointmentDto.getDentist() );
     }
 

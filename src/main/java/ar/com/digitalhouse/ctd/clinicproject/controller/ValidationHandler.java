@@ -10,6 +10,12 @@ import java.util.Map;
 
 public class ValidationHandler {
 
+    /**
+     *  Validation error processor
+     *
+     * @param ex
+     * @return
+     */
     @ResponseStatus( HttpStatus.BAD_REQUEST )
     @ExceptionHandler( MethodArgumentNotValidException.class )
     public Map<String, String> handleValidationExceptions ( MethodArgumentNotValidException ex ) {
