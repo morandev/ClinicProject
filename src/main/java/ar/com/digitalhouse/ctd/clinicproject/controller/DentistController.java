@@ -1,7 +1,9 @@
 package ar.com.digitalhouse.ctd.clinicproject.controller;
 
 import ar.com.digitalhouse.ctd.clinicproject.dto.DentistDto;
+import ar.com.digitalhouse.ctd.clinicproject.exception.ResourceNotFoundException;
 import ar.com.digitalhouse.ctd.clinicproject.model.service.IDentistService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping( "/dentists" )
 public class DentistController {
+
+    private final Logger logger = Logger.getLogger( DentistController.class );
     private final IDentistService dentistService;
     @Autowired
     public DentistController( IDentistService dentistService ) {
@@ -46,36 +50,36 @@ public class DentistController {
     }
 
     @DeleteMapping( "/{id}" )
-    public ResponseEntity delete( @PathVariable Long id ) {
+    public ResponseEntity delete( @PathVariable Long id ) throws ResourceNotFoundException {
 
         if( dentistService.find( id ).isPresent() ) {
             dentistService.delete( id );
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.notFound().build();
+        throw new ResourceNotFoundException("id: " + id + " not found");
     }
 
     @GetMapping( "/" )
-    public ResponseEntity<DentistDto> findByEnrollment( @RequestParam( required = false ) String enrollment) {
+    public ResponseEntity<DentistDto> findByEnrollment( @RequestParam( required = false ) String enrollment) throws ResourceNotFoundException {
         Optional<DentistDto> opDentistDto = dentistService.findByEnrollment( enrollment );
 
         if( opDentistDto.isPresent() ) {
             return ResponseEntity.ok( opDentistDto.get() );
         }
 
-        return ResponseEntity.notFound().build();
+        throw new ResourceNotFoundException("enrollment: " + enrollment + " not found");
     }
 
     @GetMapping( "/{id}" )
-    public ResponseEntity<DentistDto> find( @PathVariable Long id ) {
+    public ResponseEntity<DentistDto> find( @PathVariable Long id ) throws ResourceNotFoundException {
         Optional<DentistDto> opDentistDto = dentistService.find( id );
 
         if( opDentistDto.isPresent() ) {
             return ResponseEntity.ok( opDentistDto.get() );
         }
 
-        return ResponseEntity.notFound().build();
+        throw new ResourceNotFoundException("id: " + id + " not found");
     }
 
     @GetMapping
@@ -84,14 +88,14 @@ public class DentistController {
     }
 
     @PutMapping( "/{id}" )
-    public ResponseEntity<DentistDto> update( @PathVariable Long id , @Valid @RequestBody DentistDto dentistDto ) {
+    public ResponseEntity<DentistDto> update( @PathVariable Long id , @Valid @RequestBody DentistDto dentistDto ) throws ResourceNotFoundException {
         Optional<DentistDto> opDentistDto = dentistService.update( id , dentistDto );
 
         if( opDentistDto.isPresent() ) {
             return ResponseEntity.ok( opDentistDto.get() );
         }
 
-        return ResponseEntity.notFound().build();
+        throw new ResourceNotFoundException("id: " + id + " not found");
     }
 
 }

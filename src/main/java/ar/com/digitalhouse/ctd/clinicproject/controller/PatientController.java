@@ -1,7 +1,9 @@
 package ar.com.digitalhouse.ctd.clinicproject.controller;
 
 import ar.com.digitalhouse.ctd.clinicproject.dto.PatientDto;
+import ar.com.digitalhouse.ctd.clinicproject.exception.ResourceNotFoundException;
 import ar.com.digitalhouse.ctd.clinicproject.model.service.IPatientService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping( "/patients" )
 public class PatientController {
+
+    private final Logger logger = Logger.getLogger( PatientController.class );
     private final IPatientService patientService;
     @Autowired
     public PatientController( IPatientService patientService ) {
@@ -46,25 +50,25 @@ public class PatientController {
     }
 
     @DeleteMapping( "/{id}" )
-    public ResponseEntity delete( @PathVariable Long id ) {
+    public ResponseEntity delete( @PathVariable Long id ) throws ResourceNotFoundException {
 
         if( patientService.find( id ).isPresent() ) {
             patientService.delete( id );
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.notFound().build();
+        throw new ResourceNotFoundException("id: " + id + " not found");
     }
 
     @GetMapping( "/{id}" )
-    public ResponseEntity<PatientDto> find( @PathVariable Long id ) {
+    public ResponseEntity<PatientDto> find( @PathVariable Long id ) throws ResourceNotFoundException {
         Optional<PatientDto> patientDto = patientService.find( id );
 
         if( patientDto.isPresent() ) {
             return ResponseEntity.ok( patientDto.get() );
         }
 
-        return ResponseEntity.notFound().build();
+        throw new ResourceNotFoundException("id: " + id + " not found");
     }
 
     @GetMapping
@@ -73,14 +77,14 @@ public class PatientController {
     }
 
     @PutMapping( "/{id}" )
-    public ResponseEntity<PatientDto> update( @PathVariable Long id , @Valid @RequestBody PatientDto patient ) {
+    public ResponseEntity<PatientDto> update( @PathVariable Long id , @Valid @RequestBody PatientDto patient ) throws ResourceNotFoundException {
         Optional<PatientDto> patientDto = patientService.update( id , patient );
 
         if( patientDto.isPresent() ) {
             return ResponseEntity.ok( patientDto.get() );
         }
 
-        return ResponseEntity.notFound().build();
+        throw new ResourceNotFoundException("id: " + id + " not found");
     }
 
 }
