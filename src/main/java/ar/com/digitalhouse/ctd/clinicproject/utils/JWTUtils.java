@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class JWTUtils {
                 .setClaims( claims )
                 .setSubject( subject )
                 .setIssuedAt( new Date( System.currentTimeMillis() ) )
-                .setExpiration( new Date( System.currentTimeMillis() + (1000 * 60) + (60 * 10) ) ) //TODO: Refactor
+                .setExpiration( Date.from( ZonedDateTime.now().plusMinutes(60).toInstant() ) )
                 .signWith( SignatureAlgorithm.HS256, SECRET_KEY )
                 .compact();
     }

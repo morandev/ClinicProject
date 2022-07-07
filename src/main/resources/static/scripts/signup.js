@@ -1,5 +1,3 @@
-//TODO: Limpiar los logs y reemplazar comentarios a ingles
-
 window.addEventListener( 'load' , function () {
 
     const form = document.forms[0];
@@ -13,7 +11,7 @@ window.addEventListener( 'load' , function () {
     form.addEventListener( 'submit' , function( event ) {
        event.preventDefault();
 
-        // showSpinner();
+        showSpinner();
 
         const payload = {
             name: firstName.value,
@@ -51,13 +49,12 @@ window.addEventListener( 'load' , function () {
             .then( data => {
 
                 if ( data.jwt ) {
-                    // suppressSpinner();
+                    suppressSpinner();
                     // REDIRECT
                     location.replace('index.html');
                 }
-            }).catch(err => {
-                // suppressSpinner();
-                console.log( err );
+            }).catch( err => {
+                suppressSpinner();
             })
     };
 

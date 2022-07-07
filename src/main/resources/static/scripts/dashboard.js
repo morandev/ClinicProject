@@ -1,5 +1,3 @@
-//TODO: Limpiar los logs y reemplazar comentarios a ingles
-
 // IF NO JWT, REDIRECT
 if (!localStorage.jwt) {
   location.replace('./index.html');

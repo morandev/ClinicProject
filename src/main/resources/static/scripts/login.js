@@ -1,5 +1,3 @@
-//TODO: Limpiar los logs
-
 window.addEventListener( 'load' , function () {
 
     const form = document.querySelector("#form-one");
@@ -10,7 +8,7 @@ window.addEventListener( 'load' , function () {
     form.addEventListener( 'submit' , function( event ) {
         event.preventDefault();
 
-        // showSpinner();
+        showSpinner();
 
         const payload = {
             username: username.value,
@@ -47,13 +45,12 @@ window.addEventListener( 'load' , function () {
                  if ( data.jwt ) {
                     // JWT TO LOCALSTORAGE
                     localStorage.setItem( 'jwt' , JSON.stringify( data.jwt ) );
-                    // suppressSpinner();
+                    suppressSpinner();
                     // REDIRECT
                     location.replace( './views/home.html' );
                 }
             }).catch( err => {
-                // suppressSpinner();
-                console.log( err );
+                suppressSpinner();
             })
     };
 
