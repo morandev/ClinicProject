@@ -1,4 +1,12 @@
+//TODO: Limpiar los logs y reemplazar comentarios a ingles
+
+// IF NO JWT, REDIRECT
+if (!localStorage.jwt) {
+  location.replace('./index.html');
+}
+
 window.addEventListener( 'load' , function() {
+    const token = JSON.parse( localStorage.jwt );
 
     const urlDentists = 'http://localhost:8080/dentists';
     const urlAddDentist = 'http://localhost:8080/dentists/add';
@@ -15,23 +23,54 @@ window.addEventListener( 'load' , function() {
     const table = document.querySelector( '.table' );
     const tblBody = document.createElement( "tbody" );
 
+    const btnCloseSession = document.querySelector('#close-app');
+    const btnBackHome = document.querySelector('#back-home');
+
     /**
     *   START WITH FILLING THE TABLE
     */
     fillTable(); 
 
     /**
+     *  CLOSE SESSION BUTTON
+     */
+    btnCloseSession?.addEventListener( 'click' , function () {
+
+      const closeSessionConfirm = confirm("¿Desea cerrar sesión?");
+
+      if ( closeSessionConfirm ) {
+        // CLEAR LOCALSTORAGE AND REDIRECT
+        localStorage.clear();
+        location.assign(`${location.origin}`);
+      }
+
+    });
+
+    /**
+     *  BACK TO HOME PAGE BUTTON
+     */
+    btnBackHome?.addEventListener( 'click' , function () {
+        location.replace(`${location.origin}/views/home.html`);
+    });
+
+
+    /**
      *  FORM FIND DENTIST
      */
-    formFindDentist.addEventListener('submit', function( e ) {
+    formFindDentist?.addEventListener('submit', function( e ) {
       
         e.preventDefault()
         e.stopPropagation()
         
+        const settings = {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}` }
+        };
+
         let enrollment = inputEnrollmentSearch.value;
         enrollment = enrollment.trim();
 
-        fetch( `${urlDentists}/?enrollment=${enrollment}`, { method: 'GET' } )
+        fetch( `${urlDentists}/?enrollment=${enrollment}`, settings )
           .then( response => {
 
             if ( !response.ok  ) {
@@ -59,14 +98,14 @@ window.addEventListener( 'load' , function() {
           })
           .catch( error => console.log( error ) );
     
-        // limpiamos el form
+        // CLEAR FORM FIND 
         formFindDentist.reset();
     }); 
 
     /**
      *  FORM ADD DENTIST
      */
-    formAddDentist.addEventListener('submit', function( e ) {
+    formAddDentist?.addEventListener('submit', function( e ) {
 
       e.preventDefault()
       e.stopPropagation()
@@ -80,9 +119,7 @@ window.addEventListener( 'load' , function() {
       const settings = {
         method: 'POST',
         body: JSON.stringify( payload ),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
       };
 
       fetch( urlAddDentist, settings )
@@ -103,7 +140,7 @@ window.addEventListener( 'load' , function() {
       })
       .catch( error => console.log( error ));
   
-      //limpiamos el form
+      // CLEAR FORM ADD 
       formAddDentist.reset();
     });
 
@@ -115,10 +152,15 @@ window.addEventListener( 'load' , function() {
       tblBody.innerHTML = '';
       tblBody.classList.add( "text-center" );
 
+      const settings = {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` }
+      };
+
       /**
        *  FETCH WITH GET METHOD
        */
-      fetch( urlDentists , { method: 'GET' } )
+      fetch( urlDentists , settings )
         .then( response => response.json() )
         .then( data => {
           
@@ -225,7 +267,7 @@ window.addEventListener( 'load' , function() {
           });
           
           // TABLE APPENDS'S
-          table.appendChild( tblBody );
+          table?.appendChild( tblBody );
         })
         .catch( error => console.log( error ) );
     };
@@ -236,7 +278,13 @@ window.addEventListener( 'load' , function() {
      * @param {*} id 
      */
     function deleteDentist( id ) {
-      fetch( `${urlDentists}/${id}` , { method: 'DELETE' } )
+
+      const settings = {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      };
+
+      fetch( `${urlDentists}/${id}` , settings )
         .then( response => response )
         .catch( error => console.log( error ) );
     }
@@ -261,9 +309,7 @@ window.addEventListener( 'load' , function() {
       const settings = {
         method: 'PUT',
         body: JSON.stringify( payload ),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
       };
 
       fetch( `${urlDentists}/${id}` , settings )
