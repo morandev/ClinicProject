@@ -1,0 +1,32 @@
+
+[2022-07-08 17:08:58] [ INFO ] [AuthenticationController:99] User successfully registered
+[2022-07-08 17:09:06] [ DEBUG] [DentistController:94] getting-all-dentists
+[2022-07-08 17:09:06] [ DEBUG] [DentistService:33] getting-0-dentists
+[2022-07-08 17:09:17] [ DEBUG] [DentistService:123] an-unregistered-dentist
+[2022-07-08 17:09:17] [ DEBUG] [DentistService:49] dentist-added
+[2022-07-08 17:09:17] [ DEBUG] [DentistController:41] one-dentist-added
+[2022-07-08 17:09:24] [ DEBUG] [DentistService:119] a-registered-dentist
+[2022-07-08 17:09:24] [ DEBUG] [DentistController:49] cannot-add-a-dentist-that-already-exists
+[2022-07-08 17:09:42] [ DEBUG] [DentistController:94] getting-all-dentists
+[2022-07-08 17:09:42] [ DEBUG] [DentistService:36] getting-1-dentists
+[2022-07-08 17:10:09] [ DEBUG] [DentistService:90] dentist-found-by-id
+[2022-07-08 17:10:09] [ DEBUG] [DentistController:84] one-dentist-found-by-id
+[2022-07-08 17:10:16] [ DEBUG] [DentistService:95] cannot-find-dentist-by-id
+[2022-07-08 17:10:16] [ DEBUG] [DentistController:88] cannot-find-a-dentist-by-id
+[2022-07-08 17:10:16] [ ERROR] [GlobalExceptionHandler:22] ResourceNotFoundException: id: 2 not found
+[2022-07-08 17:10:43] [ DEBUG] [DentistService:110] cannot-find-dentist-by-enrollment
+[2022-07-08 17:10:43] [ DEBUG] [DentistController:75] cannot-find-a-dentist-by-enrollment
+[2022-07-08 17:10:43] [ ERROR] [GlobalExceptionHandler:22] ResourceNotFoundException: enrollment: 1345634 not found
+[2022-07-08 17:11:06] [ DEBUG] [DentistService:105] dentist-found-by-enrollment
+[2022-07-08 17:11:06] [ DEBUG] [DentistController:71] one-dentist-found-by-enrollment
+[2022-07-08 17:11:21] [ DEBUG] [DentistService:74] cannot-update-dentist
+[2022-07-08 17:11:21] [ DEBUG] [DentistController:107] cannot-update-a-dentist
+[2022-07-08 17:11:21] [ ERROR] [GlobalExceptionHandler:22] ResourceNotFoundException: id: 12 not found
+[2022-07-08 17:11:30] [ DEBUG] [DentistService:70] dentist-updated
+[2022-07-08 17:11:30] [ DEBUG] [DentistController:103] one-dentist-updated
+[2022-07-08 17:11:38] [ DEBUG] [DentistService:95] cannot-find-dentist-by-id
+[2022-07-08 17:11:38] [ DEBUG] [DentistController:62] cannot-delete-a-non-existing-dentist
+[2022-07-08 17:11:38] [ ERROR] [GlobalExceptionHandler:22] ResourceNotFoundException: id: 2 not found
+[2022-07-08 17:11:48] [ DEBUG] [DentistService:90] dentist-found-by-id
+[2022-07-08 17:11:48] [ DEBUG] [DentistService:81] dentist-deleted
+[2022-07-08 17:11:48] [ DEBUG] [DentistController:58] one-dentist-deleted
