@@ -59,8 +59,7 @@ public class PatientService implements IPatientService {
 
     @Override
     public void delete( Long id ) {
-        if ( find(id) != null )
-            patientDao.deleteById( id );
+        patientDao.deleteById( id );
     }
 
     @Override

@@ -66,8 +66,7 @@ public class AppointmentService implements IAppointmentService {
 
     @Override
     public void delete( Long id ) {
-        if( find(id) != null )
-            appointmentDao.deleteById( id );
+        appointmentDao.deleteById( id );
     }
 
     @Override
@@ -95,6 +94,4 @@ public class AppointmentService implements IAppointmentService {
         return  patientService.validate( appointmentDto.getPatient() ) &&
                 dentistService.validate( appointmentDto.getDentist() );
     }
-
-
 }

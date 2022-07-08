@@ -60,8 +60,7 @@ public class AddressService implements IAddressService {
 
     @Override
     public void delete( Long id ) {
-        if ( find(id) != null )
-            addressDao.deleteById( id );
+        addressDao.deleteById( id );
     }
 
     @Override
