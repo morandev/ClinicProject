@@ -18,7 +18,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping( "/dentists" )
 public class DentistController {
-
     private final Logger logger = Logger.getLogger( DentistController.class );
     private final IDentistService dentistService;
     @Autowired
@@ -39,13 +38,15 @@ public class DentistController {
                         .path("/dentists/{id}")
                         .buildAndExpand( opDentistDto.get().getId() )
                         .toUri();
-
+                logger.debug( "one-dentist-added" );
                 return ResponseEntity.created( uri ).body( opDentistDto.get() );
             }
 
-            return ResponseEntity.notFound().build();
+            logger.error( "cannot-add-a-dentist" );
+            return ResponseEntity.internalServerError().build();
         }
 
+        logger.debug( "cannot-add-a-dentist-that-already-exists" );
         return new ResponseEntity<>( HttpStatus.CONFLICT );
     }
 
@@ -54,10 +55,12 @@ public class DentistController {
 
         if( dentistService.find( id ).isPresent() ) {
             dentistService.delete( id );
+            logger.debug( "one-dentist-deleted" );
             return ResponseEntity.noContent().build();
         }
 
-        throw new ResourceNotFoundException("id: " + id + " not found");
+        logger.debug( "cannot-delete-a-non-existing-dentist" );
+        throw new ResourceNotFoundException( "id: " + id + " not found" );
     }
 
     @GetMapping( "/" )
@@ -65,9 +68,11 @@ public class DentistController {
         Optional<DentistDto> opDentistDto = dentistService.findByEnrollment( enrollment );
 
         if( opDentistDto.isPresent() ) {
+            logger.debug( "one-dentist-found-by-enrollment" );
             return ResponseEntity.ok( opDentistDto.get() );
         }
 
+        logger.debug( "cannot-find-a-dentist-by-enrollment" );
         throw new ResourceNotFoundException("enrollment: " + enrollment + " not found");
     }
 
@@ -76,14 +81,17 @@ public class DentistController {
         Optional<DentistDto> opDentistDto = dentistService.find( id );
 
         if( opDentistDto.isPresent() ) {
+            logger.debug( "one-dentist-found-by-id" );
             return ResponseEntity.ok( opDentistDto.get() );
         }
 
+        logger.debug( "cannot-find-a-dentist-by-id" );
         throw new ResourceNotFoundException("id: " + id + " not found");
     }
 
     @GetMapping
     public ResponseEntity< Collection<DentistDto> > getAll() {
+        logger.debug( "getting-all-dentists" );
         return ResponseEntity.ok( dentistService.getAll() );
     }
 
@@ -92,10 +100,12 @@ public class DentistController {
         Optional<DentistDto> opDentistDto = dentistService.update( id , dentistDto );
 
         if( opDentistDto.isPresent() ) {
+            logger.debug( "one-dentist-updated" );
             return ResponseEntity.ok( opDentistDto.get() );
         }
 
-        throw new ResourceNotFoundException("id: " + id + " not found");
+        logger.debug( "cannot-update-a-dentist" );
+        throw new ResourceNotFoundException( "id: " + id + " not found" );
     }
 
 }
