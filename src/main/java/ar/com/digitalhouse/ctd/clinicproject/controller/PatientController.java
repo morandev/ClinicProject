@@ -1,12 +1,16 @@
 package ar.com.digitalhouse.ctd.clinicproject.controller;
 
 import ar.com.digitalhouse.ctd.clinicproject.dto.PatientDto;
+import ar.com.digitalhouse.ctd.clinicproject.exception.ResourceNotFoundException;
 import ar.com.digitalhouse.ctd.clinicproject.model.service.IPatientService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
@@ -14,6 +18,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping( "/patients" )
 public class PatientController {
+
+    private final Logger logger = Logger.getLogger( PatientController.class );
     private final IPatientService patientService;
     @Autowired
     public PatientController( IPatientService patientService ) {
@@ -21,42 +27,48 @@ public class PatientController {
     }
 
     @PostMapping( path = "/add" )
-    public ResponseEntity<PatientDto> add( @RequestBody PatientDto patient ) {
-        Optional<PatientDto> patientDto = patientService.add( patient );
+    public ResponseEntity<PatientDto> add( @Valid @RequestBody PatientDto patient ) {
 
-        if( patientDto.isPresent() ) {
-            URI uri = ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand( patientDto.get().getId() )
-                    .toUri();
+        if ( !patientService.validate( patient ) ) {
 
-            return ResponseEntity.created( uri ).body( patientDto.get() );
+            Optional<PatientDto> patientDto = patientService.add( patient );
+
+            if ( patientDto.isPresent() ) {
+                URI uri = ServletUriComponentsBuilder
+                        .fromCurrentServletMapping()
+                        .path("/patients/{id}")
+                        .buildAndExpand( patientDto.get().getId() )
+                        .toUri();
+
+                return ResponseEntity.created( uri ).body( patientDto.get() );
+            }
+
+            return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.notFound().build();
+        return new ResponseEntity<>( HttpStatus.CONFLICT );
     }
 
     @DeleteMapping( "/{id}" )
-    public ResponseEntity delete( @PathVariable Long id ) {
+    public ResponseEntity delete( @PathVariable Long id ) throws ResourceNotFoundException {
 
         if( patientService.find( id ).isPresent() ) {
             patientService.delete( id );
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.notFound().build();
+        throw new ResourceNotFoundException("id: " + id + " not found");
     }
 
     @GetMapping( "/{id}" )
-    public ResponseEntity<PatientDto> find( @PathVariable Long id ) {
+    public ResponseEntity<PatientDto> find( @PathVariable Long id ) throws ResourceNotFoundException {
         Optional<PatientDto> patientDto = patientService.find( id );
 
         if( patientDto.isPresent() ) {
             return ResponseEntity.ok( patientDto.get() );
         }
 
-        return ResponseEntity.notFound().build();
+        throw new ResourceNotFoundException("id: " + id + " not found");
     }
 
     @GetMapping
@@ -65,14 +77,14 @@ public class PatientController {
     }
 
     @PutMapping( "/{id}" )
-    public ResponseEntity<PatientDto> update( @PathVariable Long id , @RequestBody PatientDto patient ) {
+    public ResponseEntity<PatientDto> update( @PathVariable Long id , @Valid @RequestBody PatientDto patient ) throws ResourceNotFoundException {
         Optional<PatientDto> patientDto = patientService.update( id , patient );
 
         if( patientDto.isPresent() ) {
             return ResponseEntity.ok( patientDto.get() );
         }
 
-        return ResponseEntity.notFound().build();
+        throw new ResourceNotFoundException("id: " + id + " not found");
     }
 
 }

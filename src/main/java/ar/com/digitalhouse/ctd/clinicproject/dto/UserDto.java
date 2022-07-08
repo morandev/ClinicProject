@@ -5,24 +5,26 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 
 @JsonIgnoreProperties( ignoreUnknown = true )
 @JsonPropertyOrder( alphabetic = true )
 @Setter
 @Getter
-public class PatientDto {
+public class UserDto {
 
     private long id;
     @NotEmpty( message = "Please enter name" )
     private String name;
-    @NotEmpty( message = "Please enter surname" )
-    private String surname;
-    @NotNull( message = "Please enter address" )
-    private AddressDto address;
-    @NotNull( message = "Please enter register date" )
-    private LocalDate registerDate;
+    @NotEmpty( message = "Please enter last name" )
+    private String lastName;
+    @NotEmpty( message = "Please enter username" )
+    private String username;
+    @NotEmpty( message = "Please enter email" )
+    @Email( message = "Please enter a valid email")
+    private String email;
+    @NotEmpty( message = "Please enter password" )
+    private String password;
 
 }

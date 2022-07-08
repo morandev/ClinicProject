@@ -6,30 +6,24 @@ window.addEventListener( 'load' , function () {
     const userName = document.querySelector('#inputUsername');
     const email = document.querySelector('#inputEmail');
     const password = document.querySelector('#inputPassword');
-    const url = new URL('http://localhost:8080/auth/register');
+    const url = new URL('http://localhost:8080/authenticate/register');
 
     form.addEventListener( 'submit' , function( event ) {
        event.preventDefault();
 
-        //mostrarSpinner();
+        showSpinner();
 
         const payload = {
-            firstName: firstName.value,
+            name: firstName.value,
             lastName: lastName.value, 
-            userName: userName.value,
+            username: userName.value,
             email: email.value,
             password: password.value
         };
 
-        url.searchParams.append( "firstName" , payload.firstName );
-        url.searchParams.append( "lastName" , payload.lastName );
-        url.searchParams.append( "userName" , payload.userName );
-        url.searchParams.append( "email" , payload.email );
-        url.searchParams.append( "password" , payload.password );
-
         const settings = {
             method: 'POST',
-            mode: 'no-cors',
+            body: JSON.stringify( payload ),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -37,46 +31,37 @@ window.addEventListener( 'load' , function () {
 
         doSignUp( settings );
 
-        //limpio los campos del formulario
+        // CLEAR REGISTER FORM
         form.reset();
     });
 
     function doSignUp( settings ) {
-
-        // console.log( "Lanzando la consulta a la API" );
-        // console.log( "La URL: " + url );
         
         fetch( url , settings )
             .then( response => {
-                // console.log(response);
 
                 if ( response.ok != true ) {
-                    alert( "Alguno de los datos es incorrecto." ) 
+                    alert( "Error" ) 
                 }
 
                 return response.json();
             })
             .then( data => {
-                // console.log( "Promesa cumplida:" );
-                // console.log( data );
-            }).catch(err => {
-                //Ocultamos el spinner en caso de error
-                // ocultarSpinner();
-                console.log("Promesa rechazada:");
-                console.log(err);
+
+                if ( data.jwt ) {
+                    suppressSpinner();
+                    // REDIRECT
+                    location.replace('index.html');
+                }
+            }).catch( err => {
+                suppressSpinner();
             })
     };
 
     document.querySelector('.account')?.addEventListener('click', function( e ) {
         e.preventDefault();
         
-        location.assign("../index.html");
-    });
-
-    document.querySelector('.no-security')?.addEventListener('click', function( e ) {
-        e.preventDefault();
-
-        location.assign("../views/home.html");
+        location.assign(`${location.origin}`);
     });
 
 });

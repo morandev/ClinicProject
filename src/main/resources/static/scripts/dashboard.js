@@ -1,4 +1,10 @@
+// IF NO JWT, REDIRECT
+if ( !localStorage.jwt ) {
+  location.assign(`${location.origin}`);
+}
+
 window.addEventListener( 'load' , function() {
+    const token = JSON.parse( localStorage.jwt );
 
     const urlDentists = 'http://localhost:8080/dentists';
     const urlAddDentist = 'http://localhost:8080/dentists/add';
@@ -15,97 +21,135 @@ window.addEventListener( 'load' , function() {
     const table = document.querySelector( '.table' );
     const tblBody = document.createElement( "tbody" );
 
+    const btnCloseSession = document.querySelector('#close-app');
+    const btnBackHome = document.querySelector('#back-home');
+
     /**
-    *   START WITH FILLING THE TABLE
+    *   START WITH FILLING THE TABLE AND GETTING USERNAME
     */
     fillTable(); 
+    getUserName();
 
-    /**
-     *  FORM FIND DENTIST
-     */
-    formFindDentist.addEventListener('submit', function( e ) {
+    if ( btnCloseSession ) {
+      /**
+       *  CLOSE SESSION BUTTON
+       */
+      btnCloseSession.addEventListener( 'click' , function () {
+  
+        const closeSessionConfirm = confirm("¿Desea cerrar sesión?");
+  
+        if ( closeSessionConfirm ) {
+          // CLEAR LOCALSTORAGE AND REDIRECT
+          localStorage.clear();
+          location.assign(`${location.origin}`);
+        }
+  
+      });
+    }
+
+    if ( btnBackHome ) {
+        /**
+         *  BACK TO HOME PAGE BUTTON
+         */
+        btnBackHome.addEventListener( 'click' , function () {
+            location.assign(`${location.origin}/views/home.html`);
+        });
+    }
+
+    if ( formFindDentist ) {
+        /**
+         *  FORM FIND DENTIST
+         */
+        formFindDentist.addEventListener('submit', function( e ) {
+          
+            e.preventDefault()
+            e.stopPropagation()
+            
+            const settings = {
+              method: 'GET',
+              headers: { Authorization: `Bearer ${token}` }
+            };
+    
+            let enrollment = inputEnrollmentSearch.value;
+            enrollment = enrollment.trim();
+    
+            fetch( `${urlDentists}/?enrollment=${enrollment}`, settings )
+              .then( response => {
+    
+                if ( !response.ok  ) {
+                  alert( "Dentist Not Found, Enrollment: " + enrollment )
+                  return response;
+                } 
+    
+                return response.json();
+              })
+              .then( dentist => {
+                
+                
+                if( tblBody.innerHTML && dentist ) {
       
-        e.preventDefault()
-        e.stopPropagation()
+                  const row = document.querySelector( `.row-${ dentist.id }` );
+                  
+                  if ( row ) {
+                    row.classList.add( 'table-warning' );
+                    setTimeout(() => {
+                      row.classList.remove( 'table-warning' );
+                    }, 1000);
+                  }
+    
+                }
+              })
+              .catch( error => console.log( error ) );
         
-        let enrollment = inputEnrollmentSearch.value;
-        enrollment = enrollment.trim();
+            // CLEAR FORM FIND 
+            formFindDentist.reset();
+        }); 
+    }
 
-        fetch( `${urlDentists}/?enrollment=${enrollment}`, { method: 'GET' } )
+    if ( formAddDentist ) {
+        /**
+         *  FORM ADD DENTIST
+         */
+        formAddDentist.addEventListener('submit', function( e ) {
+    
+          e.preventDefault()
+          e.stopPropagation()
+        
+          const payload = {
+              "name" : inputName.value.trim(),
+              "surname" : inputSurName.value.trim(),
+              "enrollment" : inputEnrollment.value.trim()
+          };
+            
+          const settings = {
+            method: 'POST',
+            body: JSON.stringify( payload ),
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
+          };
+    
+          fetch( urlAddDentist, settings )
           .then( response => {
-
-            if ( !response.ok  ) {
-              alert( "Dentist Not Found, Enrollment: " + enrollment )
+    
+            if( !response.ok ) {
+              alert("Error: Ya existe dentista con enrollment: " + payload.enrollment );
               return response;
-            } 
-
+            }
+    
             return response.json();
           })
-          .then( dentist => {
-            
-            
-            if( tblBody.innerHTML && dentist ) {
-  
-              const row = document.querySelector( `.row-${ dentist.id }` );
-              
-              if ( row ) {
-                row.classList.add( 'table-warning' );
-                setTimeout(() => {
-                  row.classList.remove( 'table-warning' );
-                }, 1000);
-              }
-
-            }
+          .then( data => {
+            /**
+            *   FILLING THE TABLE
+            */
+            fillTable();
           })
-          .catch( error => console.log( error ) );
-    
-        // limpiamos el form
-        formFindDentist.reset();
-    }); 
+          .catch( error => console.log( error ));
+      
+          // CLEAR FORM ADD 
+          formAddDentist.reset();
+        });
+    }
 
-    /**
-     *  FORM ADD DENTIST
-     */
-    formAddDentist.addEventListener('submit', function( e ) {
-
-      e.preventDefault()
-      e.stopPropagation()
-    
-      const payload = {
-          "name" : inputName.value.trim(),
-          "surname" : inputSurName.value.trim(),
-          "enrollment" : inputEnrollment.value.trim()
-      };
-        
-      const settings = {
-        method: 'POST',
-        body: JSON.stringify( payload ),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      };
-
-      fetch( urlAddDentist, settings )
-      .then( response => {
-
-        if( !response.ok ) {
-          alert("Error: Ya existe dentista con enrollment: " + payload.enrollment );
-          return response;
-        }
-
-        return response.json();
-      })
-      .then( data => {
-        /**
-        *   FILLING THE TABLE
-        */
-        fillTable();
-      })
-      .catch( error => console.log( error ));
-  
-      //limpiamos el form
-      formAddDentist.reset();
-    });
 
     /**
      *  FILL TABLE WITH DENTIST
@@ -115,10 +159,15 @@ window.addEventListener( 'load' , function() {
       tblBody.innerHTML = '';
       tblBody.classList.add( "text-center" );
 
+      const settings = {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` }
+      };
+
       /**
        *  FETCH WITH GET METHOD
        */
-      fetch( urlDentists , { method: 'GET' } )
+      fetch( urlDentists , settings )
         .then( response => response.json() )
         .then( data => {
           
@@ -225,7 +274,7 @@ window.addEventListener( 'load' , function() {
           });
           
           // TABLE APPENDS'S
-          table.appendChild( tblBody );
+          table?.appendChild( tblBody );
         })
         .catch( error => console.log( error ) );
     };
@@ -236,7 +285,13 @@ window.addEventListener( 'load' , function() {
      * @param {*} id 
      */
     function deleteDentist( id ) {
-      fetch( `${urlDentists}/${id}` , { method: 'DELETE' } )
+
+      const settings = {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      };
+
+      fetch( `${urlDentists}/${id}` , settings )
         .then( response => response )
         .catch( error => console.log( error ) );
     }
@@ -261,9 +316,7 @@ window.addEventListener( 'load' , function() {
       const settings = {
         method: 'PUT',
         body: JSON.stringify( payload ),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
       };
 
       fetch( `${urlDentists}/${id}` , settings )
@@ -278,5 +331,30 @@ window.addEventListener( 'load' , function() {
       .catch( error => console.log( error ) );
 
     }
+
+
+  /**
+   *  FETCH WITH GET METHOD
+   */
+  function getUserName() {
+
+    const urlUsuario = "http://localhost:8080/users";
+
+    const settings = {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    
+    fetch( urlUsuario , settings )
+      .then( response => response.json() )
+      .then( data => {
+        const userTag = document.querySelector( '.usertag' );
+
+        if ( userTag ) 
+          userTag.innerText = `@${data.username}`;
+        
+      })
+      .catch( error => console.log( error ) );
+  }
 
 });

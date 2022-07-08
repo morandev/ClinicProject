@@ -24,7 +24,7 @@ public class User {
     private String name;
     @Column
     private String lastName;
-    @Column
+    @Column( unique = true )
     private String username;
     @Column( unique = true )
     private String email;
