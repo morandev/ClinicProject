@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService implements IAppointmentService {
-
     private final IAppointmentRepository appointmentDao;
     private final ObjectMapper mapper;
     private final IDentistService dentistService;

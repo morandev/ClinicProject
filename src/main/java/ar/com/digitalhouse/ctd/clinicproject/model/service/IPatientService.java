@@ -1,6 +1,5 @@
 package ar.com.digitalhouse.ctd.clinicproject.model.service;
 
-import ar.com.digitalhouse.ctd.clinicproject.dto.AddressDto;
 import ar.com.digitalhouse.ctd.clinicproject.dto.PatientDto;
 
 import java.util.Optional;

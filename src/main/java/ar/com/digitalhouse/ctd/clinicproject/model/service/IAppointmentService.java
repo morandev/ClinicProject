@@ -1,7 +1,6 @@
 package ar.com.digitalhouse.ctd.clinicproject.model.service;
 
 import ar.com.digitalhouse.ctd.clinicproject.dto.AppointmentDto;
-import ar.com.digitalhouse.ctd.clinicproject.dto.DentistDto;
 import ar.com.digitalhouse.ctd.clinicproject.model.entity.Appointment;
 
 import java.util.Optional;

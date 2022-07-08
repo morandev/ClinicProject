@@ -1,6 +1,5 @@
 package ar.com.digitalhouse.ctd.clinicproject.model.service.impl;
 
-import ar.com.digitalhouse.ctd.clinicproject.model.login.Rol;
 import ar.com.digitalhouse.ctd.clinicproject.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,9 +16,7 @@ import java.util.Optional;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-
     private final IUserRepository userDao;
-
     @Autowired
     public UserDetailsServiceImpl( IUserRepository userDao ) {
         this.userDao = userDao;
