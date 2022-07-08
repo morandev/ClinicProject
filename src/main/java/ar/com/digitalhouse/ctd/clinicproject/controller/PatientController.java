@@ -3,7 +3,6 @@ package ar.com.digitalhouse.ctd.clinicproject.controller;
 import ar.com.digitalhouse.ctd.clinicproject.dto.PatientDto;
 import ar.com.digitalhouse.ctd.clinicproject.exception.ResourceNotFoundException;
 import ar.com.digitalhouse.ctd.clinicproject.model.service.IPatientService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +17,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping( "/patients" )
 public class PatientController {
-
-    private final Logger logger = Logger.getLogger( PatientController.class );
     private final IPatientService patientService;
     @Autowired
     public PatientController( IPatientService patientService ) {
@@ -43,7 +40,7 @@ public class PatientController {
                 return ResponseEntity.created( uri ).body( patientDto.get() );
             }
 
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.internalServerError().build();
         }
 
         return new ResponseEntity<>( HttpStatus.CONFLICT );

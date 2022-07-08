@@ -3,7 +3,6 @@ package ar.com.digitalhouse.ctd.clinicproject.controller;
 import ar.com.digitalhouse.ctd.clinicproject.dto.AddressDto;
 import ar.com.digitalhouse.ctd.clinicproject.exception.ResourceNotFoundException;
 import ar.com.digitalhouse.ctd.clinicproject.model.service.IAddressService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +17,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping( "/addresses" )
 public class AddressController {
-
-    private final Logger logger = Logger.getLogger( AddressController.class );
     private final IAddressService addressService;
     @Autowired
     public AddressController( IAddressService addressService ) {
@@ -43,7 +40,7 @@ public class AddressController {
                 return ResponseEntity.created( uri ).body( addressDto.get() );
             }
 
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.internalServerError().build();
         }
 
         return new ResponseEntity<>( HttpStatus.CONFLICT );

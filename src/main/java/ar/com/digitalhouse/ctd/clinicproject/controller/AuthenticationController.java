@@ -89,12 +89,12 @@ public class AuthenticationController {
         user.setPassword( new BCryptPasswordEncoder().encode( userDto.getPassword() ) );
         user.setRol( Rol.ROLE_ADMIN );
 
-        userDao.save(user);
+        userDao.save( user );
 
         UserDetails userDetails = userDetailsService.loadUserByUsername( userDto.getUsername() );
 
         String token = jwtUtils.generateToken( userDetails );
-        body.put( "jwt", token );
+        body.put( "jwt" , token );
 
         logger.info("User successfully registered");
         return ResponseEntity.status( 201 ).body( body );

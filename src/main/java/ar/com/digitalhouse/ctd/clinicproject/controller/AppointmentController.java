@@ -3,7 +3,6 @@ package ar.com.digitalhouse.ctd.clinicproject.controller;
 import ar.com.digitalhouse.ctd.clinicproject.dto.AppointmentDto;
 import ar.com.digitalhouse.ctd.clinicproject.exception.ResourceNotFoundException;
 import ar.com.digitalhouse.ctd.clinicproject.model.service.IAppointmentService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,14 +17,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping( "/appointments" )
 public class AppointmentController {
-
-    private final Logger logger = Logger.getLogger( AppointmentController.class );
     private final IAppointmentService appointmentService;
     @Autowired
     public AppointmentController( IAppointmentService appointmentService ) { this.appointmentService = appointmentService; }
 
     @PostMapping( path = "/add" )
-    public ResponseEntity<AppointmentDto> add( @Valid @RequestBody AppointmentDto appointmentDto ) {
+    public ResponseEntity<AppointmentDto> add( @Valid @RequestBody AppointmentDto appointmentDto ) throws ResourceNotFoundException {
 
         if ( appointmentService.validate( appointmentDto ) ) {
             if ( appointmentService.validateParticipants( appointmentDto ) ) {
@@ -42,8 +39,9 @@ public class AppointmentController {
                     return ResponseEntity.created( uri ).body( appointmentDtoDb.get() );
                 }
 
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.internalServerError().build();
             }
+            throw new ResourceNotFoundException("one or more parts of the appointment does not exist");
         }
 
         return new ResponseEntity<>( HttpStatus.CONFLICT );
